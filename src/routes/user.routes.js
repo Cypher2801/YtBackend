@@ -33,11 +33,11 @@ router.route("/current-user").get(
     verifyJWT,
     getCurrentUser
 )
-router.route("change-details").post(
+router.route("/change-details").post(
     verifyJWT,
     changeUserDetails
 )
-router.route("change-avatar").post(
+router.route("/change-avatar").post(
     verifyJWT,
     upload.fields([
         {

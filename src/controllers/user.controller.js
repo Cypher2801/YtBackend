@@ -210,7 +210,8 @@ const refreshAccessToken = asyncHandler(async (req , res) => {
 
 const changePassword = asyncHandler ( async (req , res) => {
     const {oldPassword , newPassword} = req.body
-
+    console.log(oldPassword , newPassword);
+    
     const user = await User.findById(req.user?._id);
     if(!user){
         throw new ApiError(401 , "Unauthorized Request");
@@ -242,7 +243,7 @@ const changeUserDetails = asyncHandler ( async (req , res) => {
     if(!(fullname || email)){
         throw new ApiError(400 , "Nothing to change")
     }
-    const user = await User.findAndUpdateById(
+    const user = await User.findByIdAndUpdate(
         req.user?._id,
         {
             $set : {
@@ -253,7 +254,7 @@ const changeUserDetails = asyncHandler ( async (req , res) => {
         {new : true}
     ).select("-password");
     return res
-    .send(200)
+    .status(200)
     .json(
         new ApiResponse(200 , {} , "User details updated Successfully")
     )
@@ -268,7 +269,7 @@ const changeUserAvatar = asyncHandler ( async (req , res) => {
     if(!avatar){
         throw new ApiError(400 , "Avatar file not uploaded properly")
     }
-    const user = await User.findAndUpdateById(
+    const user = await User.findByIdAndUpdate(
         req.user?._id,
         {
             $set : {
@@ -277,6 +278,12 @@ const changeUserAvatar = asyncHandler ( async (req , res) => {
         },
         {new : true}
     ).select("-password");
+
+    return res
+    .status(200)
+    .json(
+        new ApiResponse(200 , {} , "Updated avatar successfully")
+    )
 })
 
 export {registerUser , loginUser , logoutUser , refreshAccessToken , getCurrentUser , changePassword , changeUserDetails , changeUserAvatar}
