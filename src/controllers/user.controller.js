@@ -286,4 +286,31 @@ const changeUserAvatar = asyncHandler ( async (req , res) => {
     )
 })
 
-export {registerUser , loginUser , logoutUser , refreshAccessToken , getCurrentUser , changePassword , changeUserDetails , changeUserAvatar}
+const changeUserCoverImage = asyncHandler ( async (req , res) => {
+    const coverImageLocalPath = req.files?.coverImage[0]?.path
+    if(!coverImageLocalPath) {
+        throw new ApiError(400 , "No image to change")
+    }
+    const coverImage = await uploadOnCloudinary(coverImageLocalPath);
+    if(!coverImage){
+        throw new ApiError(400 , "coverImage file not uploaded properly")
+    }
+    const user = await User.findByIdAndUpdate(
+        req.user?._id,
+        {
+            $set : {
+                coverImage : coverImage.url
+            }
+        },
+        {new : true}
+    ).select("-password");
+
+    return res
+    .status(200)
+    .json(
+        new ApiResponse(200 , {} , "Updated coverImage successfully")
+    )
+})
+
+
+export {registerUser , loginUser , logoutUser , refreshAccessToken , getCurrentUser , changePassword , changeUserDetails , changeUserAvatar ,changeUserCoverImage}
