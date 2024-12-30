@@ -1,5 +1,17 @@
 import { Router } from "express";
-import { registerUser , loginUser , logoutUser , refreshAccessToken ,changePassword , getCurrentUser , changeUserDetails , changeUserAvatar , changeUserCoverImage } from "../controllers/user.controller.js";
+import { 
+    registerUser , 
+    loginUser , 
+    logoutUser ,
+    refreshAccessToken,
+    changePassword,
+    getCurrentUser,
+    changeUserDetails,
+    changeUserAvatar,
+    changeUserCoverImage, 
+    getUserChannelProfile,
+    getWatchHistory    
+} from "../controllers/user.controller.js";
 import {verifyJWT} from "../middlewares/auth.middleware.js"
 import {upload} from "../middlewares/multer.middleware.js"
 const router = Router();
@@ -15,9 +27,11 @@ router.route("/register").post(
             maxCount : 1
         }
     ])
-    ,registerUser)
-
-router.route("/login").post(loginUser)
+    ,registerUser
+)
+router.route("/login").post(
+    loginUser
+)
 router.route("/logout").post(
     verifyJWT,
     logoutUser
@@ -33,11 +47,11 @@ router.route("/current-user").get(
     verifyJWT,
     getCurrentUser
 )
-router.route("/change-details").post(
+router.route("/change-details").patch(
     verifyJWT,
     changeUserDetails
 )
-router.route("/change-avatar").post(
+router.route("/change-avatar").patch(
     verifyJWT,
     upload.fields([
         {
@@ -47,8 +61,7 @@ router.route("/change-avatar").post(
     ]),
     changeUserAvatar
 )
-
-router.route("/change-coverImage").post(
+router.route("/change-coverImage").patch(
     verifyJWT,
     upload.fields([
         {
@@ -57,5 +70,13 @@ router.route("/change-coverImage").post(
         }
     ]),
     changeUserCoverImage
+)
+router.route("/c/:username").get(
+    verifyJWT,
+    getUserChannelProfile
+)
+router.route("/watch-history").get(
+    verifyJWT,
+    getWatchHistory
 )
 export default router
