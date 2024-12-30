@@ -58,7 +58,7 @@ const getVideoComments = asyncHandler(async (req, res) => {
         }
     ])
     
-    if(!comments || comments?.length){
+    if(!comments || !(comments?.length)){
         return new ApiError(404 , "No comments found")
     }
 

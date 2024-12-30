@@ -45,7 +45,7 @@ const toggleCommentLike = asyncHandler(async (req, res) => {
     if(!isValidObjectId(commentId)){
         return new ApiError(400 , "Please provide valid comment id")        
     }
-    const isCommentLiked = await Like.aggregate(
+    const isCommentLiked = await Like.aggregate([
         {
             $match : {
                 $and : [
@@ -54,7 +54,7 @@ const toggleCommentLike = asyncHandler(async (req, res) => {
                 ]
             }
         }
-    )
+    ])
     if(isCommentLiked?.length > 0){
         await Like.findByIdAndDelete(isCommentLiked[0]._id)
         return res
@@ -65,7 +65,7 @@ const toggleCommentLike = asyncHandler(async (req, res) => {
     }
     else{
         const like = await Like.create({
-            video : videoId,
+            comment : commentId,
             likedBy : req.user._id
         })
         return res
@@ -81,7 +81,7 @@ const toggleTweetLike = asyncHandler(async (req, res) => {
     if(!isValidObjectId(tweetId)){
         return new ApiError(400 , "Please provide valid tweet id")        
     }
-    const isTweetLiked = await Like.aggregate(
+    const isTweetLiked = await Like.aggregate([
         {
             $match : {
                 $and : [
@@ -90,7 +90,7 @@ const toggleTweetLike = asyncHandler(async (req, res) => {
                 ]
             }
         }
-    )
+    ])
     if(isTweetLiked?.length > 0){
         await Like.findByIdAndDelete(isTweetLiked[0]._id)
         return res
