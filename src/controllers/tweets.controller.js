@@ -71,7 +71,7 @@ const getUserTweets = asyncHandler(async (req, res) => {
 const updateTweet = asyncHandler(async (req, res) => {
     const {content} = req.body
     const {tweetId} = req.params
-    if(!isValidObjectId(userId)){
+    if(!isValidObjectId(tweetId)){
         return new ApiError(400 , "Please provide valid user id")
     }
     if(!content){
