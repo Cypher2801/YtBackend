@@ -8,7 +8,7 @@ import ApiResponse from "../utils/ApiRespose.js"
 const createTweet = asyncHandler(async (req, res) => {
     const {content} = req.body
     if(!content){
-        return new ApiError(400 , "Please provide content")
+        throw new ApiError(400 , "Please provide content")
     }
 
     const tweet = await Tweet.create(
@@ -18,7 +18,7 @@ const createTweet = asyncHandler(async (req, res) => {
         }
     )
     if(!tweet){
-        return new ApiError(500 , "Could not add tweet")
+        throw new ApiError(500 , "Could not add tweet")
     }
 
     return res
@@ -31,7 +31,7 @@ const createTweet = asyncHandler(async (req, res) => {
 const getUserTweets = asyncHandler(async (req, res) => {
     const {userId} = req.params
     if(!isValidObjectId(userId)){
-        return new ApiError(400 , "Please provide valid user id")
+        throw new ApiError(400 , "Please provide valid user id")
     }
 
     const allTweets = await Tweet.aggregate([
@@ -58,7 +58,7 @@ const getUserTweets = asyncHandler(async (req, res) => {
     ])
 
     if(!allTweets){
-        return new ApiError(500 , "Could not fetch tweets")
+        throw new ApiError(500 , "Could not fetch tweets")
     }
 
     return res
@@ -72,10 +72,10 @@ const updateTweet = asyncHandler(async (req, res) => {
     const {content} = req.body
     const {tweetId} = req.params
     if(!isValidObjectId(tweetId)){
-        return new ApiError(400 , "Please provide valid user id")
+        throw new ApiError(400 , "Please provide valid user id")
     }
     if(!content){
-        return new ApiError(400 , "Please provide content")
+        throw new ApiError(400 , "Please provide content")
     }  
     const Updated = await Tweet.findByIdAndUpdate(
         tweetId,
@@ -89,7 +89,7 @@ const updateTweet = asyncHandler(async (req, res) => {
         }
     )
     if(!Updated){
-        return new ApiError(500 , "Could not update tweet")
+        throw new ApiError(500 , "Could not update tweet")
     }
     return res
     .status(200)
@@ -101,11 +101,11 @@ const updateTweet = asyncHandler(async (req, res) => {
 const deleteTweet = asyncHandler(async (req, res) => {
     const {tweetId} = req.params
     if(!isValidObjectId(tweetId)){
-        return new ApiError(400 , "Please provide valid user id")
+        throw new ApiError(400 , "Please provide valid user id")
     } 
     const tweet = await Tweet.findByIdAndDelete(tweetId)
     if(!tweet){
-        return new ApiError(500 , "Could not delete tweet")
+        throw new ApiError(500 , "Could not delete tweet")
     }
     return res
     .status(200)

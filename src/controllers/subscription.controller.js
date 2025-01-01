@@ -7,7 +7,7 @@ import ApiResponse from "../utils/ApiRespose.js"
 
 const toggleSubscription = asyncHandler(async (req, res) => {
     const {channelId} = req.params
-    if(!isValidObjectId(channelId)) return new ApiError(400 , "Please provide valid channel id")
+    if(!isValidObjectId(channelId)) throw new ApiError(400 , "Please provide valid channel id")
     const isSubscribed = await Subscription.aggregate([
         {
             $match : {
@@ -42,7 +42,7 @@ const toggleSubscription = asyncHandler(async (req, res) => {
 // controller to return subscriber list of a channel
 const getUserChannelSubscribers = asyncHandler(async (req, res) => {
     const {channelId} = req.params
-    if(!isValidObjectId(channelId)) return new ApiError(400 , "Please provide valid channel id")
+    if(!isValidObjectId(channelId)) throw new ApiError(400 , "Please provide valid channel id")
     const subscribers = await Subscription.aggregate([
         {
             $match : {
@@ -51,7 +51,7 @@ const getUserChannelSubscribers = asyncHandler(async (req, res) => {
         }
     ])
 
-    if(!subscribers?.length > 0) return new ApiError(404 , "No subscribers found")
+    if(!subscribers?.length > 0) throw new ApiError(404 , "No subscribers found")
     console.log(subscribers);
     
     return res
@@ -64,7 +64,7 @@ const getUserChannelSubscribers = asyncHandler(async (req, res) => {
 // controller to return channel list to which user has subscribed
 const getSubscribedChannels = asyncHandler(async (req, res) => {
     const { subscriberId } = req.params
-    if(!isValidObjectId(subscriberId)) return new ApiError(400 , "Please provide valid channel id")
+    if(!isValidObjectId(subscriberId)) throw new ApiError(400 , "Please provide valid channel id")
         const subscribers = await Subscription.aggregate([
             {
                 $match : {
@@ -97,7 +97,7 @@ const getSubscribedChannels = asyncHandler(async (req, res) => {
             }
         ])
     
-        if(!subscribers?.length > 0) return new ApiError(404 , "No subscribers found")
+        if(!subscribers?.length > 0) throw new ApiError(404 , "No subscribers found")
     
         return res
         .status(200)

@@ -8,7 +8,7 @@ const getVideoComments = asyncHandler(async (req, res) => {
     const {videoId} = req.params
     const {page = 1, limit = 10} = req.query
     if(!isValidObjectId(videoId)){
-        return new ApiError(400 , "Please provide valid video id")
+        throw new ApiError(400 , "Please provide valid video id")
     }
     const comments = await Comment.aggregate([
         {
@@ -59,7 +59,7 @@ const getVideoComments = asyncHandler(async (req, res) => {
     ])
     
     if(!comments || !(comments?.length)){
-        return new ApiError(404 , "No comments found")
+        throw new ApiError(404 , "No comments found")
     }
 
     return res
@@ -73,10 +73,10 @@ const addComment = asyncHandler(async (req, res) => {
     const {videoId} = req.params
     const {content} = req.body
     if(!isValidObjectId(videoId)){
-        return new ApiError(400 , "Please provide valid video id")
+        throw new ApiError(400 , "Please provide valid video id")
     }
     if(!content){
-        return new ApiError(400 , "Please provide content")
+        throw new ApiError(400 , "Please provide content")
     }
 
     const comment = await Comment.create(
@@ -87,7 +87,7 @@ const addComment = asyncHandler(async (req, res) => {
         }
     )
     if(!comment){
-        return new ApiError(500 , "Could not add comment")
+        throw new ApiError(500 , "Could not add comment")
     }
 
     return res
@@ -100,8 +100,8 @@ const addComment = asyncHandler(async (req, res) => {
 const updateComment = asyncHandler(async (req, res) => {
     const {content} = req.body
     const {commentId} = req.params
-    if(!isValidObjectId(commentId)) return new ApiError(400 , "Please provide valid comment id")
-    if(!content) return new ApiError(400 , "Please provide content")
+    if(!isValidObjectId(commentId)) throw new ApiError(400 , "Please provide valid comment id")
+    if(!content) throw new ApiError(400 , "Please provide content")
     const comment = await Comment.findByIdAndUpdate(commentId , 
         {
             $set : {
@@ -111,7 +111,7 @@ const updateComment = asyncHandler(async (req, res) => {
         {new : true}
     )
     if(!comment){
-        return new ApiError(500 , "Could not update comment")
+        throw new ApiError(500 , "Could not update comment")
     }
     return res
     .status(200)
@@ -122,11 +122,11 @@ const updateComment = asyncHandler(async (req, res) => {
 
 const deleteComment = asyncHandler(async (req, res) => {
     const {commentId} = req.params
-    if(!isValidObjectId(commentId)) return new ApiError(400 , "Please provide valid comment id")
+    if(!isValidObjectId(commentId)) throw new ApiError(400 , "Please provide valid comment id")
     const comment = await Comment.findByIdAndDelete(new mongoose.Types.ObjectId(commentId))
 // console.log(comment);
     if(!comment){
-        return new ApiError(500 , "Could not delete comment")
+        throw new ApiError(500 , "Could not delete comment")
     }
     return res
     .status(200)

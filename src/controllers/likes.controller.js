@@ -7,7 +7,7 @@ import ApiResponse from "../utils/ApiRespose.js"
 const toggleVideoLike = asyncHandler(async (req, res) => {
     const {videoId} = req.params
     if(!isValidObjectId(videoId)){
-        return new ApiError(400 , "Please provide valid video id")        
+        throw new ApiError(400 , "Please provide valid video id")        
     }
     const isVideoLiked = await Like.aggregate([
         {
@@ -43,7 +43,7 @@ const toggleVideoLike = asyncHandler(async (req, res) => {
 const toggleCommentLike = asyncHandler(async (req, res) => {
     const {commentId} = req.params
     if(!isValidObjectId(commentId)){
-        return new ApiError(400 , "Please provide valid comment id")        
+        throw new ApiError(400 , "Please provide valid comment id")        
     }
     const isCommentLiked = await Like.aggregate([
         {
@@ -79,7 +79,7 @@ const toggleCommentLike = asyncHandler(async (req, res) => {
 const toggleTweetLike = asyncHandler(async (req, res) => {
     const {tweetId} = req.params
     if(!isValidObjectId(tweetId)){
-        return new ApiError(400 , "Please provide valid tweet id")        
+        throw new ApiError(400 , "Please provide valid tweet id")        
     }
     const isTweetLiked = await Like.aggregate([
         {
@@ -159,7 +159,7 @@ const getLikedVideos = asyncHandler(async (req, res) => {
         }
     ])
     if(!likedVideos && likedVideos?.length < 1){
-        return new ApiError(404 , "No liked videos found")
+        throw new ApiError(404 , "No liked videos found")
     }
 
     return res

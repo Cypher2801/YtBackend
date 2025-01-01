@@ -69,14 +69,14 @@ const publishVideo = asyncHandler(async (req , res) => {
     const thumbnailLocalPath = req.files?.thumbnail[0]?.path
 
     if(!videoLocalPath || !thumbnailLocalPath){
-        return new ApiError(400 , "Please upload video and thumbnail")
+        throw new ApiError(400 , "Please upload video and thumbnail")
     }
 
     const video = await uploadOnCloudinary(videoLocalPath)
     const thumbnail = await uploadOnCloudinary(thumbnailLocalPath)
 
     if(!video || !thumbnail){
-        return new ApiError(400 , "Could not upload video or thumbnail")
+        throw new ApiError(400 , "Could not upload video or thumbnail")
     }
     // console.log(video);
     const videoData = await Video.create({
@@ -88,7 +88,7 @@ const publishVideo = asyncHandler(async (req , res) => {
         owner : req.user._id
     })
     if(!videoData){
-        return new ApiError(400 , "Could not publish video")
+        throw new ApiError(400 , "Could not publish video")
     }
     return res
     .status(200)
@@ -100,7 +100,7 @@ const publishVideo = asyncHandler(async (req , res) => {
 const getVideoById = asyncHandler(async (req , res) => {
     const {videoId} = req.params;
     if(!isValidObjectId(videoId)) {
-        return new ApiError(400 , "Please provide video id")
+        throw new ApiError(400 , "Please provide video id")
     }
     const video = await Video.aggregate([
         {
@@ -160,7 +160,7 @@ const getVideoById = asyncHandler(async (req , res) => {
         }
     ])
     if(!video?.length){
-        return new ApiError(404 , "Video not found")
+        throw new ApiError(404 , "Video not found")
     }
     await Video.findByIdAndUpdate(videoId , {
         $set : {
@@ -178,11 +178,11 @@ const updateVideo = asyncHandler(async (req , res) => {
     const {videoId} = req.params;
     const {title , description} = req.body;
     if(!isValidObjectId(videoId)) {
-        return new ApiError(400 , "Please provide video id")
+        throw new ApiError(400 , "Please provide video id")
     }
     
     if(!title && !description){
-        return new ApiError(400 , "Please provide title or description")
+        throw new ApiError(400 , "Please provide title or description")
     }
     
     const response = await Video.findByIdAndUpdate(videoId , {
@@ -206,7 +206,7 @@ const updateVideo = asyncHandler(async (req , res) => {
 // const deleteVideo = asyncHandler(async (req , res) => {
 //     const {videoId} = req.params;
 //     if(!videoId){
-//         return new ApiError(400 , "Please provide video id")
+//         throw new ApiError(400 , "Please provide video id")
 //     }
 
 // })
